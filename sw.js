@@ -17,7 +17,7 @@ const BOSE_SW_VERSION = "bose-sw-v2";
 // 🔔 [نظام الإشعارات]: أيقونة افتراضية لو الإشعار الجاي من السيرفر متضمنش
 // أيقونة (نفس شعار المتجر الافتراضي المستخدم في api/manifest.js).
 const BOSE_PUSH_DEFAULT_ICON =
-  "https://res.cloudinary.com/dyx4w0dr1/image/upload/f_auto,q_auto,w_192,h_192,c_fill,g_auto,b_white/v1780054759/logo_igggsb.png";
+  "/images/brand/logo-512.png";
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();

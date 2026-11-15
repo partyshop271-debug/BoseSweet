@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="icon" type="image/png" href="/images/brand/logo-192.png">
+    <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     <title>اطلبي تورتتك في خطوة واحدة | حلويات بوسي</title>
@@ -13,6 +13,7 @@
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin>
 
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="vendor/fonts/brand/brand-fonts.css?v=2026_brand_v1">
     <!-- [إصلاح جذري نهائي]: الأيقونات بقت مُستضافة محليًا داخل الموقع نفسه (vendor/fontawesome)
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
@@ -156,7 +157,7 @@
             border: 2px solid var(--bose-pink) !important;
             border-radius: 18px !important;
             padding: 16px;
-            font-family: 'Cairo', sans-serif !important;
+            font-family: var(--bose-font-body) !important;
             font-size: 15px !important;
             font-weight: 600 !important;
             color: var(--bose-black) !important;
@@ -177,7 +178,7 @@
             background: var(--bose-pink-light);
             border: 1px dashed var(--bose-pink);
             color: var(--bose-black);
-            font-family: 'Cairo';
+            font-family: var(--bose-font-body);
             font-size: 12.5px;
             font-weight: 600;
             padding: 8px 14px;
@@ -206,7 +207,7 @@
             font-weight: 700 !important;
             border-radius: 50px !important;
             cursor: pointer !important;
-            font-family: 'Cairo' !important;
+            font-family: var(--bose-font-body) !important;
             box-shadow: 0 8px 30px rgba(var(--bose-pink-rgb), 0.4) !important;
             white-space: nowrap;
         }

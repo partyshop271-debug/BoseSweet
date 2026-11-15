@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="icon" type="image/png" href="/images/brand/logo-192.png">
+    <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     <title>تتبع طلبك | حلويات بوسي</title>
@@ -21,6 +21,7 @@
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="vendor/fonts/brand/brand-fonts.css?v=2026_brand_v1">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v44.2">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v39.0">
@@ -51,18 +52,18 @@
     <script src="js/guided-tour.js?v=3.5" defer></script>
 
     <style>
-        .track-page-wrapper { padding: 60px 20px 80px; max-width: 620px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
+        .track-page-wrapper { padding: 60px 20px 80px; max-width: 620px; margin: 0 auto; min-height: 70vh; font-family: var(--bose-font-body); }
         .track-page-header { text-align: center; margin-bottom: 35px; }
-        .track-page-header h1 { font-size: 1.9rem; font-weight: 800; color: var(--bose-black, #111); margin-bottom: 10px; }
-        .track-page-header p { color: var(--bose-black, #111); opacity: 0.75; font-size: 0.98rem; line-height: 1.7; }
+        .track-page-header h1 { font-size: 1.9rem; font-weight: 800; color: var(--bose-black, #603524); margin-bottom: 10px; }
+        .track-page-header p { color: var(--bose-black, #603524); opacity: 0.75; font-size: 0.98rem; line-height: 1.7; }
 
         .track-form-card { background: var(--bose-white, #fff); border: var(--bose-border-pink, 1px solid rgba(var(--bose-pink-rgb),0.3)); border-radius: 20px; padding: 28px 24px; box-shadow: var(--bose-shadow-glow, 0 8px 24px rgba(var(--bose-pink-rgb),0.12)); }
         .track-form-field { margin-bottom: 16px; }
-        .track-form-field label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--bose-black, #111); margin-bottom: 6px; }
-        .track-form-field input { width: 100%; box-sizing: border-box; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.95rem; direction: ltr; text-align: right; }
+        .track-form-field label { display: block; font-size: 0.88rem; font-weight: 700; color: var(--bose-black, #603524); margin-bottom: 6px; }
+        .track-form-field input { width: 100%; box-sizing: border-box; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(96, 53, 36,0.15); font-family: var(--bose-font-body); font-size: 0.95rem; direction: ltr; text-align: right; }
         .track-form-field input:focus { outline: none; border-color: var(--bose-pink, var(--bose-pink)); }
 
-        .track-submit-btn { width: 100%; background: var(--bose-pink, var(--bose-pink)); color: #fff; border: none; border-radius: 14px; padding: 14px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s ease; }
+        .track-submit-btn { width: 100%; background: var(--bose-pink, var(--bose-pink)); color: #fff; border: none; border-radius: 14px; padding: 14px; font-family: var(--bose-font-body); font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity 0.2s ease; }
         .track-submit-btn:disabled { opacity: 0.6; cursor: default; }
 
         .track-result-box { margin-top: 26px; display: none; }
@@ -80,7 +81,7 @@
            والألوان الوردية فضلت للحالات "لسه شغالة" (بانتظار/تحضير/جاهز/في الطريق)
            عشان تفضل متسقة مع هوية البراند طول رحلة الطلب العادية. */
         .status-delivered, .status-completed { background: rgba(46, 158, 91, 0.1); color: #2e9e5b; }
-        .status-cancelled { background: rgba(17, 17, 17, 0.06); color: #6b6b6b; }
+        .status-cancelled { background: rgba(96, 53, 36, 0.06); color: #6b6b6b; }
 
         /* 👑🛡️ [تحسين - خط زمني مرئي لمراحل الطلب]: العميلة قبل كده كانت
            بتشوف بس "الحالة الحالية" كشارة واحدة، من غير أي إحساس بالرحلة
@@ -100,7 +101,7 @@
             right: 12%;
             left: 12%;
             height: 3px;
-            background: rgba(17, 17, 17, 0.08);
+            background: rgba(96, 53, 36, 0.08);
             z-index: 0;
         }
 
@@ -119,12 +120,12 @@
             height: 28px;
             border-radius: 50%;
             background: var(--bose-white, #fff);
-            border: 3px solid rgba(17, 17, 17, 0.15);
+            border: 3px solid rgba(96, 53, 36, 0.15);
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 12px;
-            color: rgba(17, 17, 17, 0.35);
+            color: rgba(96, 53, 36, 0.35);
             transition: all 0.3s ease;
         }
 
@@ -150,13 +151,13 @@
         .track-timeline-label {
             font-size: 0.7rem;
             font-weight: 700;
-            color: rgba(17, 17, 17, 0.45);
+            color: rgba(96, 53, 36, 0.45);
             text-align: center;
         }
 
         .track-timeline-step.is-done .track-timeline-label,
         .track-timeline-step.is-current .track-timeline-label {
-            color: var(--bose-black, #111);
+            color: var(--bose-black, #603524);
         }
 
         @media (max-width: 380px) {
@@ -167,10 +168,10 @@
         .track-order-meta div { background: rgba(var(--bose-pink-rgb), 0.08); border-radius: 12px; padding: 12px 14px; }
         .track-order-meta span { display: block; }
         .track-order-meta .meta-label { font-size: 0.78rem; opacity: 0.65; margin-bottom: 4px; }
-        .track-order-meta .meta-value { font-weight: 700; color: var(--bose-black, #111); font-size: 0.92rem; }
+        .track-order-meta .meta-value { font-weight: 700; color: var(--bose-black, #603524); font-size: 0.92rem; }
 
-        .track-items-list { border-top: 1px dashed rgba(17,17,17,0.15); padding-top: 14px; }
-        .track-item-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 6px 0; color: var(--bose-black, #111); }
+        .track-items-list { border-top: 1px dashed rgba(96, 53, 36,0.15); padding-top: 14px; }
+        .track-item-row { display: flex; justify-content: space-between; font-size: 0.9rem; padding: 6px 0; color: var(--bose-black, #603524); }
         .track-item-row .item-flavor { opacity: 0.65; font-size: 0.8rem; }
         .track-item-row-wrapper { border-bottom: 1px solid rgba(0,0,0,0.06); padding-bottom: 4px; margin-bottom: 4px; }
         .track-item-row-wrapper:last-child { border-bottom: none; }
@@ -184,7 +185,7 @@
             border: 1.5px solid rgba(0,0,0,0.08);
         }
         .track-item-image-link img { width: 100%; height: 100%; object-fit: cover; display: block; }
-        .track-total-row { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.02rem; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(17,17,17,0.1); color: var(--bose-pink, var(--bose-pink)); }
+        .track-total-row { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.02rem; margin-top: 12px; padding-top: 12px; border-top: 1px solid rgba(96, 53, 36,0.1); color: var(--bose-pink, var(--bose-pink)); }
     </style>
 </head>
 <body>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="icon" type="image/png" href="/images/brand/logo-192.png">
+    <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     <title>تصفح الأصناف الفاخرة | حلويات بوسي</title>
@@ -43,6 +43,7 @@
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل -->
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً بالصفحة دي -->
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="vendor/fonts/brand/brand-fonts.css?v=2026_brand_v1">
     <!-- [إصلاح جذري نهائي]: الأيقونات بقت مُستضافة محليًا داخل الموقع نفسه (vendor/fontawesome)
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
@@ -86,12 +87,12 @@
         .bose-category-breadcrumb {
             font-size: 0.9rem;
             margin-bottom: 25px;
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
             font-weight: 600 !important;
         }
 
         .bose-category-breadcrumb a {
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
             text-decoration: none;
             transition: color 0.3s ease;
         }
@@ -111,7 +112,7 @@
         }
 
         .category-title-text {
-            color: var(--bose-black, #111111) !important;
+            color: var(--bose-black, #603524) !important;
             font-size: 1.85rem;
             font-weight: 700 !important;
             position: relative;
@@ -161,7 +162,7 @@
         }
 
         .category-desc-text {
-            color: #111111;
+            color: #603524;
             font-size: 1.1rem;
             font-weight: 600;
             line-height: 2;
@@ -269,7 +270,7 @@
             font-size: 1.15rem;
             margin: 10px 0 4px 0;
             font-weight: 700 !important;
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
         }
 
         .product-card-flavor-name {
@@ -285,7 +286,7 @@
            اختياري بدل تكبير الكارت كله. */
         .product-card-desc {
             font-size: 0.85rem;
-            color: #111111;
+            color: #603524;
             line-height: 1.4;
             margin: 6px 0 4px 0;
             max-height: calc(1.4em * 3);
@@ -354,13 +355,13 @@
         }
 
         .bose-filter-tab-pill {
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--bose-font-body);
             font-weight: 700 !important;
             font-size: 0.85rem;
             padding: 10px 20px;
             border: 1px solid rgba(var(--bose-pink-rgb), 0.3);
             background: #FFFFFF;
-            color: #111111;
+            color: #603524;
             border-radius: 50px;
             cursor: pointer;
             transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
@@ -393,7 +394,7 @@
             font-weight: bold;
             font-size: 1.2rem;
             cursor: pointer;
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -411,7 +412,7 @@
             border: none;
             font-weight: 700;
             font-size: 1.1rem;
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
             background: transparent;
             -moz-appearance: textfield;
         }
@@ -460,7 +461,7 @@
         }
 
         .bose-internal-add:hover {
-            background-color: #111111;
+            background-color: #603524;
         }
 
         /* 🧺👑 [حل احترافي - بناء بوكس من نكهات متعددة في شاشة واحدة]: لأي فئة
@@ -493,13 +494,13 @@
             font-size: 1.05rem;
             font-weight: 800;
             margin-bottom: 3px;
-            color: #111111;
+            color: #603524;
         }
         .bose-box-intro-banner span {
             font-size: 0.88rem;
             font-weight: 600;
             opacity: 0.85;
-            color: #111111;
+            color: #603524;
         }
 
         .bose-box-card {
@@ -524,13 +525,13 @@
             direction: rtl;
         }
         .bose-box-filling-chip {
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--bose-font-body);
             font-size: 0.75rem;
             font-weight: 700;
             padding: 5px 12px;
             border: 1px solid rgba(var(--bose-pink-rgb), 0.4);
             background: #FFFFFF;
-            color: #111111;
+            color: #603524;
             border-radius: 50px;
             cursor: pointer;
         }
@@ -553,7 +554,7 @@
             text-align: center;
             font-weight: 800;
             font-size: 1.15rem;
-            color: #111111;
+            color: #603524;
         }
 
         /* 🧺 [الشريط الثابت السفلي - ملخص البوكس]: ثابت فوق شريط التنقل السفلي
@@ -569,7 +570,7 @@
             z-index: 4500;
             background: #FFFFFF;
             border-top: 1.5px solid var(--bose-pink);
-            box-shadow: 0 -6px 20px rgba(17, 17, 17, 0.12);
+            box-shadow: 0 -6px 20px rgba(96, 53, 36, 0.12);
             padding: 12px 16px;
             display: none;
         }
@@ -586,7 +587,7 @@
         .bose-box-sticky-text {
             font-size: 0.85rem;
             font-weight: 800;
-            color: #111111;
+            color: #603524;
             margin-bottom: 6px;
         }
         .bose-box-sticky-progress-track {
@@ -607,7 +608,7 @@
             border: none;
             border-radius: 50px;
             padding: 12px 22px;
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--bose-font-body);
             font-weight: 800;
             font-size: 0.88rem;
             cursor: pointer;
@@ -654,7 +655,7 @@
         .bose-empty-state-container {
             text-align: center;
             padding: 60px 20px;
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
         }
         
         .bose-empty-state-container i {
@@ -707,9 +708,9 @@
              بتقارن الأسعار (خصوصاً أول مرة) محتاجة تقدر ترتب بنفسها من الأرخص للأغلى
              أو العكس، بدل ما يتحكم في الترتيب سلوك تصفح مش واضح لها. -->
         <div class="bose-category-sort-row" style="display:flex; justify-content:flex-end; margin-bottom:16px;">
-            <label for="bose-category-sort-select" style="display:flex; align-items:center; gap:8px; font-size:0.9rem; font-weight:700; color:#111;">
+            <label for="bose-category-sort-select" style="display:flex; align-items:center; gap:8px; font-size:0.9rem; font-weight:700; color:#603524;">
                 ترتيب حسب
-                <select id="bose-category-sort-select" style="padding:8px 12px; border-radius:10px; border:1px solid rgba(var(--bose-pink-rgb),0.35); font-family:'Cairo',sans-serif; font-weight:700; color:#111; background:#fff; cursor:pointer;">
+                <select id="bose-category-sort-select" style="padding:8px 12px; border-radius:10px; border:1px solid rgba(var(--bose-pink-rgb),0.35); font-family: var(--bose-font-body); font-weight:700; color:#603524; background:#fff; cursor:pointer;">
                     <option value="default">الأنسب لك</option>
                     <option value="price-asc">السعر: من الأقل للأعلى</option>
                     <option value="price-desc">السعر: من الأعلى للأقل</option>
@@ -839,7 +840,7 @@
                         + '.bose-cc-hero__media{border-radius:22px;overflow:hidden;aspect-ratio:16/9;max-height:420px;background:linear-gradient(135deg,rgba(var(--bose-pink-rgb),.28),rgba(var(--bose-pink-rgb),.08))}'
                         + '.bose-cc-hero__img{width:100%;height:100%;object-fit:cover;display:block}'
                         + '.bose-cc-hero__body{padding:14px 4px 0;text-align:right}'
-                        + '.bose-cc-hero__title{font-size:1.7rem;font-weight:800;margin:0 0 6px;line-height:1.4;color:#111}'
+                        + '.bose-cc-hero__title{font-size:1.7rem;font-weight:800;margin:0 0 6px;line-height:1.4;color:#603524}'
                         + '.bose-cc-hero__sub{font-size:1rem;margin:0 0 6px;line-height:1.9;opacity:.9;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}'
                         + '.bose-cc-hero__sub.is-open{display:block;overflow:visible;-webkit-line-clamp:unset}'
                         + '.bose-cc-hero__more{background:none;border:0;padding:0;margin:0 0 10px;font:inherit;font-weight:800;color:var(--bose-pink);cursor:pointer;display:none}'

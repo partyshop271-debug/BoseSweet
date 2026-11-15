@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="icon" type="image/png" href="/images/brand/logo-192.png">
+    <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     <title>المنيو الشامل | حلويات بوسي</title>
@@ -16,7 +16,7 @@
     <!-- 📱 علامات Open Graph الكاملة لمشاركات فخمة وااحترافية -->
     <meta property="og:title" content="المنيو الشامل | حلويات بوسي">
     <meta property="og:description" content="تصفح فئات حلويات بوسي الـ 12 المعتمدة رسمياً واختر أصنافك المفضلة بكل سهولة ونعومة بصريّة.">
-    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <meta property="og:image" content="https://bose-sweet.vercel.app/images/brand/logo-512.png">
     <meta property="og:type" content="website">
     
     <!-- ⚡ [إصلاح أداء]: preconnect ناقص كان بيأخر أول اتصال بمصادر الخط والصور والأيقونات -->
@@ -26,6 +26,7 @@
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً بالصفحة دي -->
     <link rel="canonical" href="https://bose-sweet.vercel.app/menu.html">
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="vendor/fonts/brand/brand-fonts.css?v=2026_brand_v1">
     <!-- [إصلاح جذري نهائي]: الأيقونات بقت مُستضافة محليًا داخل الموقع نفسه (vendor/fontawesome)
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
@@ -53,14 +54,14 @@
             --bose-pink: #FF91A4;
             --bose-pink-rgb: 255, 145, 164;
             --bose-white: #FFFFFF;
-            --bose-black: #111111;
+            --bose-black: #603524;
             --bose-cream: rgba(var(--bose-pink-rgb), 0.08);
             --bose-shadow-glow: 0 8px 32px rgba(var(--bose-pink-rgb), 0.12);
         }
         
         body {
-            font-family: 'Cairo', sans-serif !important;
-            background-color: var(--bose-white) !important;
+            font-family: var(--bose-font-body) !important;
+            background-color: var(--bose-ivory) !important;
             color: var(--bose-black) !important;
             margin: 0;
             padding: 0;
@@ -336,7 +337,7 @@
                 if (cardImg) {
                     cardImg.addEventListener("error", function onCardImgError() {
                         cardImg.removeEventListener("error", onCardImgError);
-                        cardImg.src = "https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png";
+                        cardImg.src = "/images/brand/logo-512.png";
                     });
                 }
                 grid.appendChild(card);

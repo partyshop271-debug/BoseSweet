@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="icon" type="image/png" href="/images/brand/logo-192.png">
+    <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     
@@ -19,6 +19,7 @@
     <!-- 🎨 ربط ملفات التصميم الموزعة هندسياً لمنع تضخم الأكواد وتأخر التحميل البصري 🎨 -->
     <!-- 🐛 [إصلاح حرج]: خط Cairo وأيقونات Font Awesome كانوا غير محمّلين نهائياً في أهم صفحة تحويل بالموقع -->
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="vendor/fonts/brand/brand-fonts.css?v=2026_brand_v1">
     <!-- [إصلاح جذري نهائي]: الأيقونات بقت مُستضافة محليًا داخل الموقع نفسه (vendor/fontawesome)
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
@@ -83,10 +84,10 @@
         }
 
         .checkout-pane-title {
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--bose-font-body);
             font-size: 1.25rem;
             font-weight: 700 !important;
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
             margin: 0 0 24px 0;
             border-bottom: 1px dashed rgba(var(--bose-pink-rgb), 0.25);
             padding-bottom: 12px;
@@ -138,10 +139,10 @@
         }
 
         .input-group-node label {
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--bose-font-body);
             font-size: 0.95rem;
             font-weight: 700 !important;
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
             display: flex;
             align-items: center;
             gap: 6px;
@@ -156,13 +157,13 @@
             width: 100%;
             padding: 14px 16px;
             border-radius: 12px;
-            border: 1px solid rgba(17, 17, 17, 0.12);
-            font-family: 'Cairo', sans-serif;
+            border: 1px solid rgba(96, 53, 36, 0.12);
+            font-family: var(--bose-font-body);
             font-size: 0.95rem;
             box-sizing: border-box;
             outline: none;
             background: var(--bose-white, #FFFFFF);
-            color: var(--bose-black, #111111);
+            color: var(--bose-black, #603524);
             transition: all 0.3s ease;
         }
 
@@ -188,14 +189,14 @@
         .btn-fulfillment-node {
             flex: 1;
             min-width: 140px;
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--bose-font-body);
             font-size: 0.95rem;
             font-weight: 700 !important;
             padding: 16px;
             border-radius: 16px;
-            border: 2px solid rgba(17, 17, 17, 0.08);
+            border: 2px solid rgba(96, 53, 36, 0.08);
             background: var(--bose-white, #FFFFFF);
-            color: rgba(17, 17, 17, 0.6);
+            color: rgba(96, 53, 36, 0.6);
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
@@ -240,8 +241,8 @@
             justify-content: space-between;
             align-items: center;
             font-size: 0.9rem;
-            color: var(--bose-black, #111111);
-            border-bottom: 1px dashed rgba(17, 17, 17, 0.05);
+            color: var(--bose-black, #603524);
+            border-bottom: 1px dashed rgba(96, 53, 36, 0.05);
             padding-bottom: 10px;
         }
 
@@ -252,7 +253,7 @@
             color: var(--bose-white, #FFFFFF);
             border: none;
             border-radius: 50px;
-            font-family: 'Cairo', sans-serif;
+            font-family: var(--bose-font-body);
             font-size: 1.05rem;
             font-weight: 700 !important;
             cursor: pointer;
@@ -385,21 +386,21 @@
                          الرئيسية، بنفس أسلوب بانر وقت التحضير تحت. -->
                     <div id="checkout-season-message-notice" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-notify-green-rgb),0.1); border: 1px solid rgba(var(--bose-notify-green-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
                         <i class="fas fa-sparkles" style="color:var(--bose-notify-green-dark); margin-top:2px; font-size: 1rem;"></i>
-                        <p id="checkout-season-message-text" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
+                        <p id="checkout-season-message-text" style="margin:0; font-size:0.85rem; font-weight:600; color:#603524; line-height:1.7; text-align: right;"></p>
                     </div>
 
                     <!-- ⏰ [مواعيد الاستلام والتوصيل - واضحة وبخط كبير]: الساعات بتتملى تلقائي من إعدادات
                          المتجر (boseFillBusinessHoursNotices في cart-engine.js)، والنص الافتراضي هنا 9 الصبح - 10 بالليل. -->
                     <div id="checkout-business-hours-notice" class="bose-hours-notice" role="note" style="text-align:center; direction:rtl; background: rgba(var(--bose-notify-green-rgb),0.12); border: 2.5px solid var(--bose-notify-green); border-radius: 18px; padding: 18px 14px; margin: 0 0 14px 0;">
-    <div style="font-size:1.05rem; font-weight:800; color:#111111; margin-bottom:6px;"><i class="fas fa-clock" style="color:var(--bose-notify-green-dark);"></i> مواعيد الاستلام والتوصيل</div>
+    <div style="font-size:1.05rem; font-weight:800; color:#603524; margin-bottom:6px;"><i class="fas fa-clock" style="color:var(--bose-notify-green-dark);"></i> مواعيد الاستلام والتوصيل</div>
     <div class="bose-hours-range-text" style="font-size:1.75rem; font-weight:900; color:var(--bose-notify-green-dark); line-height:1.4; margin-bottom:8px;">من 9:00 الصبح لحد 10:00 بالليل</div>
-    <div style="font-size:1rem; font-weight:800; color:#111111; line-height:1.8;">مفيش استلام ولا توصيل قبل <span class="bose-hours-start-text">9:00 الصبح</span> ولا بعد <span class="bose-hours-end-text">10:00 بالليل</span> - بدون أي استثناء.</div>
+    <div style="font-size:1rem; font-weight:800; color:#603524; line-height:1.8;">مفيش استلام ولا توصيل قبل <span class="bose-hours-start-text">9:00 الصبح</span> ولا بعد <span class="bose-hours-end-text">10:00 بالليل</span> - بدون أي استثناء.</div>
 </div>
 
                     <div id="checkout-prep-time-notice" style="display:flex; align-items:flex-start; gap:10px; background: rgba(var(--bose-notify-green-rgb),0.1); border: 1px solid rgba(var(--bose-notify-green-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-bottom: 14px; direction: rtl;">
                         <i class="fas fa-clock" style="color:var(--bose-notify-green-dark); margin-top:2px; font-size: 1rem;"></i>
                         <div>
-                            <p id="checkout-preparation-message" style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.7; text-align: right;"></p>
+                            <p id="checkout-preparation-message" style="margin:0; font-size:0.85rem; font-weight:600; color:#603524; line-height:1.7; text-align: right;"></p>
                         </div>
                     </div>
 
@@ -450,7 +451,7 @@
                          (قبل مدة التحضير الثابتة أو اليوم مكتمل) - بيقترح أقرب 3 أيام
                          متاحة. مفيش استثناءات ومفيش تواصل واتساب لتظبيط موعد أقرب. -->
                     <div id="checkout-schedule-alert" style="display:none; margin-top:10px; background: rgba(var(--bose-notify-green-rgb),0.08); border: 1px dashed var(--bose-notify-green); border-radius: 14px; padding: 14px 16px; direction: rtl;">
-                        <p id="checkout-schedule-alert-text" style="margin:0 0 10px; font-size:0.92rem; font-weight:700; color:#111111; line-height:1.7;"></p>
+                        <p id="checkout-schedule-alert-text" style="margin:0 0 10px; font-size:0.92rem; font-weight:700; color:#603524; line-height:1.7;"></p>
                         <div id="checkout-schedule-suggestions" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom:10px;"></div>
                     </div>
                     </div><!-- /#bose-fulfillment-and-schedule-section -->
@@ -459,7 +460,7 @@
                          يظهر تلقائيًا بس لو السلة فيها الاتنين مع بعض. -->
                     <div id="checkout-mixed-order-warning-banner" style="display:none; align-items:flex-start; gap:10px; background: rgba(var(--bose-notify-green-rgb),0.1); border: 1px solid rgba(var(--bose-notify-green-rgb),0.4); border-radius: 14px; padding: 14px 16px; margin-top: 4px; direction: rtl;">
                         <i class="fas fa-triangle-exclamation" style="color:var(--bose-notify-green-dark); margin-top:2px;"></i>
-                        <p style="margin:0; font-size:0.85rem; font-weight:600; color:#111111; line-height:1.6;">
+                        <p style="margin:0; font-size:0.85rem; font-weight:600; color:#603524; line-height:1.6;">
                             طلبك فيه صنف تورت أو ورد مخصص من المحاكي، وده محتاج وقت تحضير أطول (<strong id="checkout-custom-lead-label">3 أيام</strong>). المنتجات العادية الموجودة معاه في نفس الطلب هتتسلّم <strong>مع</strong> المخصص في نفس الموعد المتأخر، مش هتوصلك لوحدها بدري.
                         </p>
                     </div>
@@ -489,7 +490,7 @@
                 <div class="summary-pricing-table" style="margin: 0; padding: 0; border: none; display: flex; flex-direction: column; gap: 14px;">
                     <div class="pricing-row-node" style="display: flex; justify-content: space-between;">
                         <span class="pricing-label-text">صافي قيمة الأصناف:</span>
-                        <span id="summary-subtotal" class="pricing-value-text" style="font-weight: 700; color: #111111;">0 EGP</span>
+                        <span id="summary-subtotal" class="pricing-value-text" style="font-weight: 700; color: #603524;">0 EGP</span>
                     </div>
                     <div class="pricing-row-node" style="display: flex; justify-content: space-between;">
                         <span class="pricing-label-text">رسوم ومصاريف الشحن:</span>
@@ -497,7 +498,7 @@
                     </div>
                     
                     <div class="summary-grand-total-row" style="border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.25); padding-top: 18px; display: flex; justify-content: space-between; align-items: center;">
-                        <span class="grand-total-label" style="font-weight: 700; color: #111111;">الإجمالي الكلي (المقرّب):</span>
+                        <span class="grand-total-label" style="font-weight: 700; color: #603524;">الإجمالي الكلي (المقرّب):</span>
                         <span id="summary-grand-total" class="total-value-display" style="font-size: 1.5rem; font-weight: 700; color: var(--bose-pink);">0 EGP</span>
                     </div>
                 </div>
@@ -506,15 +507,15 @@
                      (2) الدفع أونلاين بتحويل كاش/InstaPay. الافتراضي = أونلاين (نفس السلوك القديم).
                      القيمة بتتبعت للقاعدة كـ p_payment_method ('cod' | 'online') وبتتفحص هناك كمان. -->
                 <style>
-                    #bose-payment-method-picker { margin-top: 18px; direction: rtl; text-align: right; font-family: 'Cairo'; color: #111111; }
+                    #bose-payment-method-picker { margin-top: 18px; direction: rtl; text-align: right; font-family: var(--bose-font-body); color: #603524; }
                     #bose-payment-method-picker .bose-pm-title { font-size: 0.95rem; font-weight: 800; margin: 0 0 10px; }
                     #bose-payment-method-picker .bose-pm-option { display: flex; align-items: center; gap: 12px; padding: 14px 14px; margin: 0 0 10px; border: 1.5px solid rgba(var(--bose-pink-rgb), 0.55); border-radius: 14px; background: #FFFFFF; cursor: pointer; min-height: 64px; }
-                    #bose-payment-method-picker .bose-pm-option.is-selected { border-color: #111111; box-shadow: 0 0 0 3px rgba(var(--bose-pink-rgb), 0.25); background: rgba(var(--bose-pink-rgb), 0.07); }
-                    #bose-payment-method-picker .bose-pm-option input[type="radio"] { flex: 0 0 22px; width: 22px; height: 22px; margin: 0; accent-color: #111111; cursor: pointer; }
+                    #bose-payment-method-picker .bose-pm-option.is-selected { border-color: #603524; box-shadow: 0 0 0 3px rgba(var(--bose-pink-rgb), 0.25); background: rgba(var(--bose-pink-rgb), 0.07); }
+                    #bose-payment-method-picker .bose-pm-option input[type="radio"] { flex: 0 0 22px; width: 22px; height: 22px; margin: 0; accent-color: #603524; cursor: pointer; }
                     #bose-payment-method-picker .bose-pm-text { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
                     #bose-payment-method-picker .bose-pm-text strong { font-size: 0.9rem; font-weight: 800; line-height: 1.6; }
                     #bose-payment-method-picker .bose-pm-text small { font-size: 0.8rem; line-height: 1.7; opacity: 0.85; }
-                    #bose-cod-info-box { display: none; margin-top: 4px; padding: 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px solid var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo'; color: #111111; }
+                    #bose-cod-info-box { display: none; margin-top: 4px; padding: 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px solid var(--bose-pink); direction: rtl; text-align: right; font-family: var(--bose-font-body); color: #603524; }
                     #bose-cod-info-box .bose-cod-head { font-size: 0.92rem; font-weight: 800; margin: 0 0 8px; }
                     #bose-cod-info-box .bose-cod-amount-card { background: #FFFFFF; border: 2px dashed var(--bose-pink); border-radius: 14px; padding: 10px 14px; text-align: center; margin: 8px 0; }
                     #bose-cod-info-box .bose-cod-amount-label { display: block; font-size: 0.85rem; font-weight: 700; }
@@ -524,9 +525,9 @@
                 </style>
                 <!-- 🎁 [مزايا الطلب من الموقع]: بتتملى ديناميكياً من إعدادات الولاء الحية -->
                 <style>
-                    #bose-site-perks { margin: 18px 0 0; padding: 14px 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px dashed var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo'; color: #111111; line-height: 1.9; font-size: 0.88rem; }
+                    #bose-site-perks { margin: 18px 0 0; padding: 14px 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px dashed var(--bose-pink); direction: rtl; text-align: right; font-family: var(--bose-font-body); color: #603524; line-height: 1.9; font-size: 0.88rem; }
                     #bose-site-perks strong { display: block; font-size: 0.95rem; margin-bottom: 4px; }
-                    #bose-site-perks a { color: #111111; font-weight: 800; text-decoration: underline; }
+                    #bose-site-perks a { color: #603524; font-weight: 800; text-decoration: underline; }
                 </style>
                 <div id="bose-site-perks" hidden></div>
 
@@ -568,19 +569,19 @@
                      ⚠️ كل الـ IDs (bose-deposit-amount / -label / -phone-number / bose-copy-deposit-phone /
                      checkout-payment-sender-phone / err-...) اتحافظ عليها زي ما هي عشان cart-engine.js والجولة الإرشادية. -->
                 <style>
-                    #bose-deposit-payment-box { margin-top: 16px; padding: 18px 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px solid var(--bose-pink); direction: rtl; text-align: right; font-family: 'Cairo'; color: #111111; }
+                    #bose-deposit-payment-box { margin-top: 16px; padding: 18px 16px; border-radius: 16px; background: rgba(var(--bose-pink-rgb), 0.07); border: 1.5px solid var(--bose-pink); direction: rtl; text-align: right; font-family: var(--bose-font-body); color: #603524; }
                     #bose-deposit-payment-box .bose-pay-head { display: flex; align-items: center; gap: 8px; font-size: 0.95rem; font-weight: 800; margin: 0 0 4px; }
                     #bose-deposit-payment-box .bose-pay-intro { margin: 0 0 16px; font-size: 0.85rem; line-height: 1.8; }
                     #bose-deposit-payment-box .bose-pay-step { display: flex; gap: 12px; align-items: flex-start; padding: 14px 0; border-top: 1px dashed rgba(var(--bose-pink-rgb), 0.55); }
-                    #bose-deposit-payment-box .bose-pay-num { flex: 0 0 30px; width: 30px; height: 30px; border-radius: 50%; background: #111111; color: #FFFFFF; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
+                    #bose-deposit-payment-box .bose-pay-num { flex: 0 0 30px; width: 30px; height: 30px; border-radius: 50%; background: #603524; color: #FFFFFF; font-weight: 800; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; margin-top: 2px; }
                     #bose-deposit-payment-box .bose-pay-body { flex: 1 1 auto; min-width: 0; }
                     #bose-deposit-payment-box .bose-pay-step-title { font-size: 0.9rem; font-weight: 800; line-height: 1.7; margin: 0 0 8px; display: block; }
                     #bose-deposit-payment-box .bose-pay-hint { font-size: 0.8rem; line-height: 1.85; margin: 8px 0 0; }
                     #bose-deposit-payment-box .bose-pay-value-card { background: #FFFFFF; border: 2px dashed var(--bose-pink); border-radius: 14px; padding: 12px 14px; text-align: center; }
-                    #bose-deposit-payment-box #bose-deposit-amount { display: block; font-size: 1.4rem; font-weight: 800; line-height: 1.3; color: #111111; direction: ltr; }
+                    #bose-deposit-payment-box #bose-deposit-amount { display: block; font-size: 1.4rem; font-weight: 800; line-height: 1.3; color: #603524; direction: ltr; }
                     #bose-deposit-payment-box #bose-deposit-amount small { font-size: 0.85rem; font-weight: 700; margin-inline-start: 6px; }
-                    #bose-deposit-payment-box #bose-deposit-phone-number { display: block; font-size: 1.4rem; font-weight: 800; line-height: 1.4; letter-spacing: 1.5px; color: #111111; direction: ltr; user-select: all; -webkit-user-select: all; word-break: keep-all; }
-                    #bose-deposit-payment-box #bose-copy-deposit-phone { width: 100%; margin-top: 10px; min-height: 48px; border: none; border-radius: 12px; background: #111111; color: #FFFFFF; font-family: 'Cairo'; font-size: 0.9rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+                    #bose-deposit-payment-box #bose-deposit-phone-number { display: block; font-size: 1.4rem; font-weight: 800; line-height: 1.4; letter-spacing: 1.5px; color: #603524; direction: ltr; user-select: all; -webkit-user-select: all; word-break: keep-all; }
+                    #bose-deposit-payment-box #bose-copy-deposit-phone { width: 100%; margin-top: 10px; min-height: 48px; border: none; border-radius: 12px; background: #603524; color: #FFFFFF; font-family: var(--bose-font-body); font-size: 0.9rem; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
                     #bose-deposit-payment-box #bose-copy-deposit-phone.is-copied { background: #1E7B3A; }
                     #bose-deposit-payment-box .bose-pay-methods { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 10px; }
                     #bose-deposit-payment-box .bose-pay-chip { background: #FFFFFF; border: 1.5px solid var(--bose-pink); border-radius: 999px; padding: 4px 14px; font-size: 0.85rem; font-weight: 800; }
@@ -661,7 +662,7 @@
                 </p>
                 <div id="checkout-submit-error" role="alert" style="display:none; margin-top:12px; padding:12px 14px; border-radius:12px; background:#FDECEC; border:1px solid #F5C2C2; color:#B3261E; font-size:0.88rem; font-weight:700; line-height:1.7; text-align:right;"></div>
                 
-                <a href="menu.html" class="bose-continue-shopping-anchor" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; text-align: center; font-weight: 600; font-size: 0.92rem; color: rgba(17, 17, 17, 0.5); text-decoration: none;">
+                <a href="menu.html" class="bose-continue-shopping-anchor" style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 15px; text-align: center; font-weight: 600; font-size: 0.92rem; color: rgba(96, 53, 36, 0.5); text-decoration: none;">
                     <i class="fas fa-arrow-right"></i> العودة للمنيو الشامل واستعراض الأصناف
                 </a>
             </div>

@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="icon" type="image/png" href="/images/brand/logo-192.png">
+    <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     <title>حلويات بوسي | صنعناها بحب لتهديها لمن تحب</title>
@@ -14,7 +14,7 @@
     <!-- علامات الفخامة والأرشفة لوسائل التواصل الاجتماعي (SEO & Open Graph) -->
     <meta property="og:title" content="حلويات بوسي | صنعناها بحب لتهديها لمن تحب">
     <meta property="og:description" content="صمم تورتتك وبوكيهك بمحاكياتنا التفاعلية، وعيش تجربة تسوق حلويات بوسي الفاخرة.">
-    <meta property="og:image" content="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <meta property="og:image" content="https://bose-sweet.vercel.app/images/brand/og-image.jpg">
     <meta property="og:type" content="website">
     <!-- 🛡️ [إصلاح حرج - SEO]: كان هنا رابط لدومين مختلف تماماً (bosesweets.com) بينما كل باقي
          الموقع (sitemap.xml، صفحات السياسات، seo.canonical في قاعدة البيانات) بيتفقوا على
@@ -31,6 +31,7 @@
     <!-- استدعاء ملفات التنسيق الموزعة لتوحيد الرؤية البصرية الفاخرة ومقاسات الأبعاد الإلزامية -->
     <!-- 🐛 [إصلاح حرج]: خط Cairo كان مُعرَّف في الـCSS بس مش متحمّل هنا خالص، فكانت الصفحة بترجع لخط النظام الافتراضي -->
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="vendor/fonts/brand/brand-fonts.css?v=2026_brand_v1">
     <!-- [إصلاح جذري نهائي]: الأيقونات بقت مُستضافة محليًا داخل الموقع نفسه (vendor/fontawesome)
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
@@ -47,14 +48,14 @@
         @media (max-width: 900px) { .bose-loyalty-teaser-inner { grid-template-columns: 1fr; gap: 34px; } }
 
         .bose-loyalty-teaser-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(var(--bose-pink-rgb),0.12); color: var(--bose-pink); font-weight: 800; font-size: 0.8rem; padding: 8px 16px; border-radius: 30px; margin-bottom: 16px; }
-        .bose-loyalty-teaser-title { font-size: 1.9rem; font-weight: 800; color: #111; margin: 0 0 14px; line-height: 1.35; }
-        .bose-loyalty-teaser-desc { font-size: 0.98rem; color: #111; opacity: 0.75; line-height: 1.8; margin: 0 0 22px; max-width: 480px; }
+        .bose-loyalty-teaser-title { font-size: 1.9rem; font-weight: 800; color: #603524; margin: 0 0 14px; line-height: 1.35; }
+        .bose-loyalty-teaser-desc { font-size: 0.98rem; color: #603524; opacity: 0.75; line-height: 1.8; margin: 0 0 22px; max-width: 480px; }
 
         .bose-loyalty-tier-chips { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }
         .bose-loyalty-chip { background: #fff; border: 1px solid rgba(var(--bose-pink-rgb),0.3); border-radius: 14px; padding: 10px 16px; display: flex; flex-direction: column; align-items: center; min-width: 78px; box-shadow: 0 4px 14px rgba(var(--bose-pink-rgb),0.1); transition: transform .25s; }
         .bose-loyalty-chip:hover { transform: translateY(-4px); }
         .bose-loyalty-chip .chip-num { font-weight: 800; color: var(--bose-pink); font-size: 1.15rem; }
-        .bose-loyalty-chip .chip-lbl { font-size: 0.7rem; color: #111; opacity: 0.65; font-weight: 700; }
+        .bose-loyalty-chip .chip-lbl { font-size: 0.7rem; color: #603524; opacity: 0.65; font-weight: 700; }
 
         .bose-loyalty-teaser-link { display: inline-flex; align-items: center; gap: 8px; color: var(--bose-pink); font-weight: 800; font-size: 0.92rem; text-decoration: none; }
         .bose-loyalty-teaser-link i { transition: transform .2s; }
@@ -67,11 +68,11 @@
         .bose-loyalty-widget-icon { width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg,var(--bose-pink),#ffb3c1); display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; animation: bltFloat 3s ease-in-out infinite; }
         .bose-loyalty-widget-icon i { color: #fff; font-size: 1.5rem; }
         @keyframes bltFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
-        .bose-loyalty-widget-card h3 { font-size: 1.05rem; font-weight: 800; color: #111; margin: 0 0 6px; position: relative; }
-        .bose-loyalty-widget-card > div > p { font-size: 0.85rem; color: #111; opacity: 0.65; margin: 0 0 18px; position: relative; }
+        .bose-loyalty-widget-card h3 { font-size: 1.05rem; font-weight: 800; color: #603524; margin: 0 0 6px; position: relative; }
+        .bose-loyalty-widget-card > div > p { font-size: 0.85rem; color: #603524; opacity: 0.65; margin: 0 0 18px; position: relative; }
 
         .bose-loyalty-widget-input-row { display: flex; gap: 8px; position: relative; }
-        .bose-loyalty-widget-input-row input { flex: 1; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.92rem; direction: ltr; text-align: right; }
+        .bose-loyalty-widget-input-row input { flex: 1; padding: 13px 14px; border-radius: 12px; border: 1px solid rgba(96, 53, 36,0.15); font-family: var(--bose-font-body); font-size: 0.92rem; direction: ltr; text-align: right; }
         .bose-loyalty-widget-input-row input:focus { outline: none; border-color: var(--bose-pink); }
         .bose-loyalty-widget-input-row button { background: var(--bose-pink); color: #fff; border: none; border-radius: 12px; width: 48px; cursor: pointer; font-size: 1rem; flex-shrink: 0; }
         .bose-loyalty-widget-error { color: var(--bose-pink); font-size: 0.8rem; font-weight: 700; margin-top: 10px; min-height: 1em; }
@@ -79,8 +80,8 @@
         .bose-loyalty-widget-result { text-align: center; animation: bltFadeIn .4s ease; }
         @keyframes bltFadeIn { from { opacity:0; transform: translateY(8px);} to { opacity:1; transform: translateY(0);} }
         .bose-loyalty-widget-result .blt-order-num { font-size: 2.1rem; font-weight: 800; color: var(--bose-pink); display: block; line-height: 1; }
-        .bose-loyalty-widget-result .blt-order-lbl { font-size: 0.78rem; color: #111; opacity: 0.65; font-weight: 700; margin-bottom: 16px; display: block; }
-        .bose-loyalty-widget-result .blt-msg { background: rgba(var(--bose-pink-rgb),0.08); border: 1px solid rgba(var(--bose-pink-rgb),0.25); border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; font-weight: 700; color: #111; line-height: 1.6; margin-bottom: 14px; }
+        .bose-loyalty-widget-result .blt-order-lbl { font-size: 0.78rem; color: #603524; opacity: 0.65; font-weight: 700; margin-bottom: 16px; display: block; }
+        .bose-loyalty-widget-result .blt-msg { background: rgba(var(--bose-pink-rgb),0.08); border: 1px solid rgba(var(--bose-pink-rgb),0.25); border-radius: 12px; padding: 12px 14px; font-size: 0.86rem; font-weight: 700; color: #603524; line-height: 1.6; margin-bottom: 14px; }
         .bose-loyalty-widget-result .blt-more-link { color: var(--bose-pink); font-weight: 800; font-size: 0.85rem; text-decoration: none; }
     </style>
 
@@ -173,7 +174,7 @@
         .boe-chips:empty { display:none; }
         .boe-chip { display:inline-flex; align-items:center; gap:7px; padding:7px 15px; border-radius:50px; background:rgba(255,255,255,.2); border:1px solid rgba(255,255,255,.45); font-weight:800; font-size:13px; animation:boeChipIn .6s cubic-bezier(.2,.8,.2,1) both; }
         .boe-chip:nth-child(2) { animation-delay:.12s; } .boe-chip:nth-child(3) { animation-delay:.24s; } .boe-chip:nth-child(4) { animation-delay:.36s; }
-        .boe-card .boe-btn { color:#111 !important; position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:12px; padding:18px 42px; border-radius:50px; background:#fff; font-weight:900; font-size:18px;
+        .boe-card .boe-btn { color:#603524 !important; position:relative; overflow:hidden; display:inline-flex; align-items:center; justify-content:center; gap:12px; padding:18px 42px; border-radius:50px; background:#fff; font-weight:900; font-size:18px;
             box-shadow:0 14px 30px rgba(0,0,0,.26); animation:boeBtnPulse 2.6s ease-in-out infinite; }
         .boe-card .boe-btn::after { content:""; position:absolute; top:0; bottom:0; width:40%; left:-60%; transform:skewX(-18deg); background:linear-gradient(90deg, transparent, rgba(var(--bose-pink-rgb),.28), transparent); animation:boeShine 3.8s ease-in-out infinite; }
         .boe-card .boe-btn i { animation:boeArrow 1.4s ease-in-out infinite; }
@@ -396,7 +397,7 @@
             <div class="simulator-card-inner-layout">
                 <div class="bose-simulator-image-wrap">
                     <span class="bose-simulator-exclusive-badge"><i class="fas fa-crown"></i> قيمة وجودة ملهاش منافس</span>
-                    <img id="cake-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="محاكي وتصميم التورت الحصري لعلامة حلويات بوسي" width="450" height="380" loading="lazy">
+                    <img id="cake-preview-img" src="/images/brand/logo-512.png" alt="محاكي وتصميم التورت الحصري لعلامة حلويات بوسي" width="450" height="380" loading="lazy">
                 </div>
                 <div class="simulator-text-content">
                     <span class="bose-simulator-eyebrow"><i class="fas fa-award"></i> تصميم مخصص 100% حسب ذوقك</span>
@@ -474,7 +475,7 @@
             <div class="simulator-card-inner-layout">
                 <div class="bose-simulator-image-wrap">
                     <span class="bose-simulator-exclusive-badge"><i class="fas fa-leaf"></i> حصريًا: ورد طبيعي حقيقي</span>
-                    <img id="flower-preview-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="تنسيق بوكيهات الورد والمال الفاخرة حسب الطلب" width="450" height="380" loading="lazy">
+                    <img id="flower-preview-img" src="/images/brand/logo-512.png" alt="تنسيق بوكيهات الورد والمال الفاخرة حسب الطلب" width="450" height="380" loading="lazy">
                 </div>
                 <div class="simulator-text-content">
                     <span class="bose-simulator-eyebrow"><i class="fas fa-award"></i> الوحيدين في الفرافرة اللي بيقدموه</span>
@@ -533,7 +534,7 @@
                         <div class="bose-app-promo-phone-notch"></div>
                         <div class="bose-app-promo-screen bose-screen-1">
                             <div class="mock-status-bar"><span>9:41</span><i class="fa-solid fa-signal"></i></div>
-                            <div class="mock-app-header"><img src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="" loading="lazy" /> <strong>حلويات بوسي</strong></div>
+                            <div class="mock-app-header"><img src="/images/brand/logo-512.png" alt="" loading="lazy" /> <strong>حلويات بوسي</strong></div>
                             <div class="mock-hero-strip">صنعناها بحب لتهديها لمن تحب 💗</div>
                             <div id="app-promo-product-grid" class="mock-product-grid">
                                 <div class="mock-product-card"></div>
@@ -613,7 +614,27 @@
             </div>
         </section>
 
-        <!-- SECTION 13: الفخر والاعتزاز (تايم لاين سردي لحكاية المتجر - كل رقم بقى محطة
+                <!-- 🏜️ [الهوية v1 - الفرافرة]: قسم "من قلب الفرافرة" - ربط البراند بمكان البداية (الفرافرة، الوادي الجديد). HTML ثابت بدون سكريبت. -->
+        <section id="farafra-story-section" class="bose-section-container bose-farafra-section" aria-labelledby="farafra-story-title">
+            <div class="bose-farafra-card">
+                <picture class="bose-farafra-media">
+                    <source type="image/webp" srcset="/images/brand/banner-900.webp 900w, /images/brand/banner-1600.webp 1600w" sizes="(max-width: 900px) 92vw, 1100px">
+                    <img src="/images/brand/banner-900.webp" width="900" height="340" loading="lazy" decoding="async" alt="حلويات بوسي - Boosy Sweets، الشيف بوسي وسط كثبان ونخيل الفرافرة بالوادي الجديد">
+                </picture>
+                <div class="bose-farafra-text">
+                    <span class="bose-farafra-tag"><i class="fas fa-location-dot" aria-hidden="true"></i> الفرافرة - الوادي الجديد</span>
+                    <h2 id="farafra-story-title">من قلب الفرافرة بدأنا.. وبكم كبرنا</h2>
+                    <p class="bose-arabic-text">بدأنا حلويات بوسي هنا في الفرافرة، وسط أهلنا وناسنا، وكبرنا بثقتكم خطوة ورا خطوة. لسه بنعمل كل طلب بنفس الحب والاهتمام، لأن الجودة اللي تستاهل ثقتكم هي وعدنا من أول يوم.</p>
+                    <p class="bose-farafra-motto">جودة تستحق الثقة، وطعم يبقى في الذاكرة</p>
+                    <div class="bose-farafra-actions">
+                        <a class="bose-farafra-btn bose-farafra-btn--primary" href="/menu.html">شوفي المنيو</a>
+                        <a class="bose-farafra-btn" href="/about.html">حكايتنا</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+<!-- SECTION 13: الفخر والاعتزاز (تايم لاين سردي لحكاية المتجر - كل رقم بقى محطة
              في رحلة موضّح جنبها معناها للعميل، بدل ما تكون كروت أرقام مجردة بلا سياق) -->
         <section id="pride-section" class="bose-pride-statistics-section" aria-labelledby="pride-main-title">
             <div class="bose-pride-container">

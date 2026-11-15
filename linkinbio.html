@@ -10,8 +10,9 @@
          noindex عمداً - مش صفحة محتوى لمحركات البحث، دورها فقط تحويل زوار السوشيال ميديا
          بسرعة لأقرب صفحة تناسب نيتهم (تصفح/عرض/تصميم/تواصل) من غير تشتيت. -->
     <link rel="preconnect" href="https://res.cloudinary.com">
-    <link rel="icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="icon" href="/images/brand/logo-192.png">
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="vendor/fonts/brand/brand-fonts.css?v=2026_brand_v1">
     <!-- 🛡️ [إصلاح جذري - ديناميكية رقم الواتساب]: الصفحة دي مستقلة عن core-engine.js
          (مفيش هيدر/فوتر موحد هنا)، فبنحمّل supabase-client.js لوحده بس عشان
          نقدر نقرأ social.whatsapp الحقيقي من store_settings ونحدّث بيه رابط
@@ -20,7 +21,7 @@
     <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Cairo', sans-serif; background: #fff; color: #111; min-height: 100vh; }
+        body { font-family: 'Poppins','Tajawal','Cairo',sans-serif; background: #FFF5ED; color: #603524; min-height: 100vh; }
         .lib-wrap { width: 100%; max-width: 480px; margin: 0 auto; padding-bottom: 36px; }
 
         /* الغلاف: تدرج وردي بيدوب في الأبيض + اللوجو */
@@ -35,23 +36,23 @@
         .lib-desc { font-size: .88rem; color: #777; margin-top: 6px; line-height: 1.8; }
 
         .lib-quick { display: flex; justify-content: center; gap: 12px; padding: 0 22px; margin-top: 18px; }
-        .lib-quick a { flex: 1; max-width: 120px; height: 58px; border-radius: 999px; border: 1.5px solid #E8E8E8; background: #fff; color: #111; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
+        .lib-quick a { flex: 1; max-width: 120px; height: 58px; border-radius: 999px; border: 1.5px solid #E8E8E8; background: #fff; color: #603524; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,.04); }
         .lib-quick a:active { transform: scale(.97); }
 
-        .lib-save { display: block; margin: 18px 22px 0; padding: 17px 20px; border-radius: 999px; background: #FF91A4; color: #111; text-align: center; text-decoration: none; font-weight: 800; font-size: 1.05rem; box-shadow: 0 8px 20px rgba(255,145,164,.45); }
+        .lib-save { display: block; margin: 18px 22px 0; padding: 17px 20px; border-radius: 999px; background: #FF91A4; color: #603524; text-align: center; text-decoration: none; font-weight: 800; font-size: 1.05rem; box-shadow: 0 8px 20px rgba(255,145,164,.45); }
         .lib-save i { margin-inline-start: 8px; }
         .lib-save:active { transform: scale(.98); }
 
         .lib-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; padding: 0 22px; margin-top: 26px; }
-        .lib-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 10px; padding: 14px 6px 12px; min-height: 118px; background: #fff; border: 1.5px solid #FFD9E1; border-radius: 20px; text-decoration: none; color: #111; text-align: center; font-weight: 700; font-size: .84rem; line-height: 1.5; box-shadow: 0 3px 10px rgba(0,0,0,.03); transition: transform .15s ease; }
+        .lib-card { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; gap: 10px; padding: 14px 6px 12px; min-height: 118px; background: #fff; border: 1.5px solid #FFD9E1; border-radius: 20px; text-decoration: none; color: #603524; text-align: center; font-weight: 700; font-size: .84rem; line-height: 1.5; box-shadow: 0 3px 10px rgba(0,0,0,.03); transition: transform .15s ease; }
         .lib-card:active { transform: scale(.97); }
         .lib-ic { width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; color: #fff; flex-shrink: 0; }
-        .ic-pink { background: #FF91A4; color: #111; }
+        .ic-pink { background: #FF91A4; color: #603524; }
         .ic-soft { background: #FFE3E9; color: #a8264b; }
         .ic-wa { background: #25D366; }
         .ic-fb { background: #1877F2; }
         .ic-ig { background: linear-gradient(45deg, #f9a03f, #e1306c 55%, #833ab4); }
-        .ic-tt { background: #111; }
+        .ic-tt { background: #603524; }
         .ic-gg { background: #fff; color: #4285F4; border: 1.5px solid #E3E3E3; }
         .lib-footer { margin-top: 26px; text-align: center; font-size: .75rem; color: #999; }
     </style>
@@ -59,7 +60,7 @@
 <body>
     <main class="lib-wrap">
         <div class="lib-cover">
-            <img class="lib-logo" id="lib-logo-img" src="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png" alt="حلويات بوسي">
+            <img class="lib-logo" id="lib-logo-img" src="/images/brand/logo-512.png" alt="حلويات بوسي">
         </div>
 
         <div class="lib-head">

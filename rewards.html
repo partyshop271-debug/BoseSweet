@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
-    <link rel="apple-touch-icon" href="https://res.cloudinary.com/dyx4w0dr1/image/upload/v1780054759/logo_igggsb.png">
+    <link rel="icon" type="image/png" href="/images/brand/logo-192.png">
+    <link rel="apple-touch-icon" href="/images/brand/apple-touch-icon.png">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#FF91A4">
     <title>نادي مكافآت حلويات بوسي | حلويات بوسي</title>
@@ -21,6 +21,7 @@
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="vendor/fonts/cairo/cairo.css?v=2026_local_v1.0">
+    <link rel="stylesheet" href="vendor/fonts/brand/brand-fonts.css?v=2026_brand_v1">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v44.2">
     <link rel="stylesheet" href="css/main.css?v=2026_production_v39.0">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v39.0">
@@ -56,30 +57,30 @@
     <script src="js/guided-tour.js?v=3.5" defer></script>
 
     <style>
-        .rw-wrap { padding: 50px 18px 90px; max-width: 720px; margin: 0 auto; min-height: 70vh; font-family: 'Cairo', sans-serif; }
+        .rw-wrap { padding: 50px 18px 90px; max-width: 720px; margin: 0 auto; min-height: 70vh; font-family: var(--bose-font-body); }
 
         /* ===== Hero ===== */
         .rw-hero { text-align: center; margin-bottom: 34px; position: relative; }
         .rw-hero-icon { width: 76px; height: 76px; border-radius: 50%; background: linear-gradient(135deg, var(--bose-pink), #ffb3c1); display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; box-shadow: 0 10px 26px rgba(var(--bose-pink-rgb),0.35); animation: rwFloat 3.2s ease-in-out infinite; }
         .rw-hero-icon i { font-size: 2rem; color: #fff; }
         @keyframes rwFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-        .rw-hero h1 { font-size: 1.85rem; font-weight: 800; color: #111; margin: 0 0 10px; }
-        .rw-hero p { color: #111; opacity: 0.72; font-size: 0.97rem; line-height: 1.75; max-width: 480px; margin: 0 auto; }
+        .rw-hero h1 { font-size: 1.85rem; font-weight: 800; color: #603524; margin: 0 0 10px; }
+        .rw-hero p { color: #603524; opacity: 0.72; font-size: 0.97rem; line-height: 1.75; max-width: 480px; margin: 0 auto; }
 
         /* ===== Explainer strip (شرايح الخصم) ===== */
         .rw-explainer { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 28px 0; }
         .rw-explainer-card { background: #fff; border: 1px solid rgba(var(--bose-pink-rgb),0.25); border-radius: 16px; padding: 14px 8px; text-align: center; transition: transform .25s ease; }
         .rw-explainer-card:hover { transform: translateY(-4px); }
         .rw-explainer-card .rw-exp-num { display: block; font-size: 1.5rem; font-weight: 800; color: var(--bose-pink); }
-        .rw-explainer-card .rw-exp-lbl { font-size: 0.72rem; color: #111; opacity: 0.75; font-weight: 700; margin-top: 4px; display: block; line-height: 1.4; }
+        .rw-explainer-card .rw-exp-lbl { font-size: 0.72rem; color: #603524; opacity: 0.75; font-weight: 700; margin-top: 4px; display: block; line-height: 1.4; }
         @media (max-width: 560px) { .rw-explainer { grid-template-columns: repeat(2, 1fr); } }
 
         /* ===== Form ===== */
         .rw-form-card { background: #fff; border: 1px solid rgba(var(--bose-pink-rgb),0.3); border-radius: 20px; padding: 26px 22px; box-shadow: 0 8px 24px rgba(var(--bose-pink-rgb),0.12); }
-        .rw-form-card label { display: block; font-size: 0.88rem; font-weight: 700; color: #111; margin-bottom: 7px; }
-        .rw-form-card input { width: 100%; box-sizing: border-box; padding: 14px 15px; border-radius: 12px; border: 1px solid rgba(17,17,17,0.15); font-family: 'Cairo', sans-serif; font-size: 0.97rem; direction: ltr; text-align: right; margin-bottom: 16px; transition: border-color .2s; }
+        .rw-form-card label { display: block; font-size: 0.88rem; font-weight: 700; color: #603524; margin-bottom: 7px; }
+        .rw-form-card input { width: 100%; box-sizing: border-box; padding: 14px 15px; border-radius: 12px; border: 1px solid rgba(96, 53, 36,0.15); font-family: var(--bose-font-body); font-size: 0.97rem; direction: ltr; text-align: right; margin-bottom: 16px; transition: border-color .2s; }
         .rw-form-card input:focus { outline: none; border-color: var(--bose-pink); }
-        .rw-submit-btn { width: 100%; background: linear-gradient(135deg, var(--bose-pink), #ff7d95); color: #fff; border: none; border-radius: 14px; padding: 15px; font-family: 'Cairo', sans-serif; font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .2s; }
+        .rw-submit-btn { width: 100%; background: linear-gradient(135deg, var(--bose-pink), #ff7d95); color: #fff; border: none; border-radius: 14px; padding: 15px; font-family: var(--bose-font-body); font-weight: 800; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: opacity .2s; }
         .rw-submit-btn:disabled { opacity: 0.6; cursor: default; }
 
         /* ===== Result ===== */
@@ -89,11 +90,11 @@
 
         .rw-summary-badge { text-align: center; margin-bottom: 22px; }
         .rw-summary-badge .rw-order-count { font-size: 2.4rem; font-weight: 800; color: var(--bose-pink); display: block; line-height: 1; }
-        .rw-summary-badge .rw-order-count-lbl { font-size: 0.85rem; color: #111; opacity: 0.7; font-weight: 700; }
+        .rw-summary-badge .rw-order-count-lbl { font-size: 0.85rem; color: #603524; opacity: 0.7; font-weight: 700; }
 
         /* Cycle progress (positions 1..7) */
         .rw-cycle-box { background: rgba(var(--bose-pink-rgb),0.06); border-radius: 16px; padding: 20px 18px; margin-bottom: 16px; }
-        .rw-cycle-title { font-weight: 800; font-size: 0.95rem; color: #111; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+        .rw-cycle-title { font-weight: 800; font-size: 0.95rem; color: #603524; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
         .rw-cycle-dots { display: flex; justify-content: space-between; align-items: center; position: relative; margin-bottom: 12px; }
         .rw-cycle-dots::before { content:''; position:absolute; top: 15px; right: 15px; left: 15px; height: 3px; background: rgba(var(--bose-pink-rgb),0.2); z-index: 0; }
         .rw-cycle-dot-wrap { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
@@ -101,19 +102,19 @@
         .rw-cycle-dot.rw-dot-done { background: var(--bose-pink); border-color: var(--bose-pink); color: #fff; }
         .rw-cycle-dot.rw-dot-current { background: #fff; border-color: var(--bose-pink); color: var(--bose-pink); box-shadow: 0 0 0 5px rgba(var(--bose-pink-rgb),0.18); animation: rwPulse 1.6s ease-in-out infinite; }
         @keyframes rwPulse { 0%,100% { box-shadow: 0 0 0 5px rgba(var(--bose-pink-rgb),0.18); } 50% { box-shadow: 0 0 0 9px rgba(var(--bose-pink-rgb),0.08); } }
-        .rw-cycle-dot-lbl { font-size: 0.65rem; color: #111; opacity: 0.6; font-weight: 700; }
-        .rw-cycle-note { text-align: center; font-size: 0.88rem; color: #111; opacity: 0.85; font-weight: 700; line-height: 1.7; }
+        .rw-cycle-dot-lbl { font-size: 0.65rem; color: #603524; opacity: 0.6; font-weight: 700; }
+        .rw-cycle-note { text-align: center; font-size: 0.88rem; color: #603524; opacity: 0.85; font-weight: 700; line-height: 1.7; }
         .rw-cycle-note .rw-highlight { color: var(--bose-pink); }
 
 
 
         /* How it works accordion-ish list */
         .rw-howto { margin-top: 30px; background: #fff; border: 1px solid rgba(var(--bose-pink-rgb),0.2); border-radius: 18px; padding: 22px 20px; }
-        .rw-howto h2 { font-size: 1.05rem; font-weight: 800; color: #111; margin: 0 0 16px; display:flex; align-items:center; gap:8px; }
+        .rw-howto h2 { font-size: 1.05rem; font-weight: 800; color: #603524; margin: 0 0 16px; display:flex; align-items:center; gap:8px; }
         .rw-howto-step { display: flex; gap: 12px; margin-bottom: 14px; align-items: flex-start; }
         .rw-howto-step:last-child { margin-bottom: 0; }
         .rw-howto-step .rw-hs-num { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: rgba(var(--bose-pink-rgb),0.12); color: var(--bose-pink); font-weight: 800; font-size: 0.82rem; display: flex; align-items: center; justify-content: center; }
-        .rw-howto-step p { margin: 0; font-size: 0.88rem; color: #111; opacity: 0.82; line-height: 1.7; }
+        .rw-howto-step p { margin: 0; font-size: 0.88rem; color: #603524; opacity: 0.82; line-height: 1.7; }
     </style>
 </head>
 <body>
