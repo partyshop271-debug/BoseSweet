@@ -24,7 +24,7 @@ const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_HdLUW0DNMcVe7b1yI9xJXQ_3avPPn2u
 // مكتوب بنمط UMD (بيدعم <script> عادي في المتصفح وrequire() في Node مع بعض).
 const BoseSeasonDates = require("../js/season-dates.js");
 
-const DEFAULT_LOGO_URL = "https://bose-sweet.vercel.app/images/brand/logo-512.png";
+const DEFAULT_LOGO_URL = "https://bose-sweet.vercel.app/images/logo-512.png";
 
 /**
  * بتحوّل أي رابط Cloudinary لنسخة مربعة نضيفة 512x512 (مقاس أيقونات
@@ -35,7 +35,7 @@ const DEFAULT_LOGO_URL = "https://bose-sweet.vercel.app/images/brand/logo-512.pn
 function toSquareIconUrl(url, size) {
     if (!url || typeof url !== "string") return DEFAULT_LOGO_URL;
     // [الهوية الجديدة] لو اللوجو هو القديم (Cloudinary) نستخدم الأيقونات المحلية الجديدة بدل ما نحوّله.
-    if (url.includes("logo_igggsb")) return size <= 192 ? "/images/brand/logo-192.png" : "/images/brand/logo-512.png";
+    if (url.includes("logo_igggsb")) return size <= 192 ? "/images/logo-192.png" : "/images/logo-512.png";
     if (!url.includes("res.cloudinary.com") || !url.includes("/upload/")) return url;
     const transform = `f_auto,q_auto,w_${size},h_${size},c_fill,g_auto,b_white`;
     return url.replace("/upload/", `/upload/${transform}/`);
@@ -102,7 +102,7 @@ module.exports = async function handler(req, res) {
         icons: [
             { src: toSquareIconUrl(logoUrl, 192), sizes: "192x192", type: "image/png", purpose: "any" },
             { src: toSquareIconUrl(logoUrl, 512), sizes: "512x512", type: "image/png", purpose: "any" },
-            { src: "/images/brand/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
+            { src: "/images/icon-maskable-512.png", sizes: "512x512", type: "image/png", purpose: "maskable" },
         ],
     };
 
