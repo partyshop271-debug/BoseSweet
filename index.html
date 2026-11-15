@@ -36,7 +36,7 @@
          بدل الاعتماد على أي CDN خارجي (cdnjs/jsdelivr/unpkg) - مفيش نقطة فشل خارجية تانية خالص. -->
     <link rel="stylesheet" href="/vendor/fontawesome/css/all.min.css?v=2026_local_v1.0" fetchpriority="high">
     <link rel="stylesheet" href="css/global.css?v=2026_production_v44.2">
-    <link rel="stylesheet" href="css/main.css?v=2026_production_v42.0">
+    <link rel="stylesheet" href="css/main.css?v=2026_production_v42.1">
     <link rel="stylesheet" href="css/season-themes.css?v=2026_production_v40.0">
     <link rel="stylesheet" href="css/simulators.css?v=2026_production_v38.0">
 
@@ -229,6 +229,11 @@
         <!-- SECTION 01: عقد من التميز (Hero Block) -->
         <section id="hero-section" class="bose-hero-section" aria-labelledby="hero-title">
             <div class="bose-hero-slide-overlay">
+                <!-- 🏜️ [بانر الفرافرة]: بانر الهوية في أول الهيرو - بيربط البراند بمكان البداية ويملأ المساحة الفاضية فوق على الكمبيوتر -->
+                <picture class="bose-hero-banner">
+                    <source type="image/webp" srcset="/images/brand/banner-900.webp 900w, /images/brand/banner-1600.webp 1600w" sizes="(max-width: 900px) 94vw, 1100px">
+                    <img src="/images/brand/banner-900.webp" width="900" height="343" fetchpriority="high" decoding="async" alt="حلويات بوسي - Boosy Sweets، الشيف بوسي وسط كثبان ونخيل الفرافرة بالوادي الجديد">
+                </picture>
                 <h1 id="hero-title" class="bose-hero-title">عقد من <span class="bose-highlight-yellow" style="color:var(--bose-pink);">التميز</span> في صناعة الحلويات</h1>
                 <p id="hero-description" class="bose-hero-desc bose-arabic-text">نختار كل مكوّن بعناية كبيرة، عشان نطلعلكم بجودة تستاهل ثقتكم.</p>
                 <a id="hero-cta-btn" href="menu.html" class="bose-hero-btn" role="button">اطلبي الآن</a>
@@ -618,8 +623,7 @@
         <section id="farafra-story-section" class="bose-section-container bose-farafra-section" aria-labelledby="farafra-story-title">
             <div class="bose-farafra-card">
                 <picture class="bose-farafra-media">
-                    <source type="image/webp" srcset="/images/brand/banner-900.webp 900w, /images/brand/banner-1600.webp 1600w" sizes="(max-width: 900px) 92vw, 1100px">
-                    <img src="/images/brand/banner-900.webp" width="900" height="340" loading="lazy" decoding="async" alt="حلويات بوسي - Boosy Sweets، الشيف بوسي وسط كثبان ونخيل الفرافرة بالوادي الجديد">
+                    <img src="/images/brand/farafra-story-620.webp" width="625" height="750" loading="lazy" decoding="async" alt="كثبان ونخيل وصخور الصحراء البيضاء في الفرافرة بالوادي الجديد - المكان اللي بدأت منه حلويات بوسي">
                 </picture>
                 <div class="bose-farafra-text">
                     <span class="bose-farafra-tag"><i class="fas fa-location-dot" aria-hidden="true"></i> الفرافرة - الوادي الجديد</span>
