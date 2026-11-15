@@ -52,7 +52,7 @@
     }
     const BRAND_BLACK = "#603524";
     const BRAND_GOLD = "#D4AF37";
-    const BRAND_LOGO_FALLBACK = "/images/brand/logo-512.png";
+    const BRAND_LOGO_FALLBACK = "/images/logo-512.png";
     const CANVAS_WIDTH = 760;
     const RENDER_SCALE = 3; // دقة أعلى (Retina+) عشان الكلام يفضل واضح بعد ضغط واتساب
 
@@ -157,7 +157,7 @@
             return specs;
         }
 
-        if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb") && !item.image.includes("images/brand/logo")) {
+        if (item.image && typeof item.image === "string" && item.image.startsWith("http") && !item.image.includes("logo_igggsb") && !item.image.includes("images/logo")) {
             return [{ label: null, url: item.image }];
         }
         return [];

@@ -613,6 +613,26 @@
         });
     }
 
+    /**
+     * 🏜️ [صور الفرافرة من لوحة التحكم]: بانر أول الصفحة وصورة بلوك "من قلب الفرافرة" بيتغيروا
+     * من الأدمن (الصفحة الرئيسية > صور الفرافرة). لو مفيش صورة محفوظة بنسيب الصور الأصلية.
+     */
+    function injectFarafraImages() {
+        const cfg = window.BoseStoreData && window.BoseStoreData.homepage && window.BoseStoreData.homepage.farafra;
+        if (!cfg) return;
+        const apply = (/** @type {string} */ selector, /** @type {string} */ url, /** @type {number} */ width) => {
+            if (!url || typeof url !== 'string') return;
+            const img = /** @type {HTMLImageElement|null} */ (document.querySelector(selector + ' img'));
+            if (!img) return;
+            const pic = img.closest('picture');
+            if (pic) pic.querySelectorAll('source').forEach((/** @type {Element} */ el) => el.remove());
+            img.removeAttribute('srcset');
+            img.src = window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(url, width) : url;
+        };
+        apply('.bose-hero-banner', cfg.heroImage, 1600);
+        apply('.bose-farafra-media', cfg.storyImage, 900);
+    }
+
     function injectSimulatorsPreviewData() {
         const data = window.BoseStoreData;
         if (!data || !data.homepage) return;
@@ -879,7 +899,7 @@
         const gridEl = document.getElementById('app-promo-product-grid');
         if (gridEl) {
             gridEl.innerHTML = products.slice(0, 4).map((/** @type {any} */ p) => {
-                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/brand/logo-512.png', 200);
+                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/logo-512.png', 200);
                 const title = window.escapeBoseHTML(p.title || '');
                 return `<div class="mock-product-card"><img src="${img}" alt="${title}" loading="lazy" /><span class="mock-product-name">${title}</span></div>`;
             }).join('');
@@ -888,7 +908,7 @@
         const cartRowsEl = document.getElementById('app-promo-cart-rows');
         if (cartRowsEl) {
             cartRowsEl.innerHTML = products.slice(0, 2).map((/** @type {any} */ p) => {
-                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/brand/logo-512.png', 100);
+                const img = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/logo-512.png', 100);
                 const title = window.escapeBoseHTML(p.title || '');
                 const price = Math.round(p.basePrice || p.price || 0);
                 return `
@@ -922,6 +942,7 @@
         renderHomepageProductGrids();
         setupOurProductsShowMore();
         injectSimulatorsPreviewData();
+        injectFarafraImages();
         setupSimulatorPreviewAnimations();
         setupLazyVideoLoading();
         setupPrideCountersAnimation();

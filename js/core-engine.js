@@ -983,7 +983,7 @@
         // التوبينجين + زرار إضافة شغال (راجع renderBoseMixToppingPickerInModal في
         // category.html اللي بتضيف أداة الاختيار دي تحت الكارت ده مباشرة).
         const isDetailView = renderMode === 'detail';
-        const rawImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : '/images/brand/logo-512.png';
+        const rawImg = (product.images && product.images.length > 0 && product.images[0]) ? product.images[0] : '/images/logo-512.png';
         const safeImg = window.optimizeBoseImageUrl(rawImg, 400);
         const safeTitle = window.escapeBoseHTML(product.title);
         const safeFlavor = window.escapeBoseHTML(product.flavorName || '');
@@ -1985,7 +1985,7 @@
             basePrice: parseFloat((product.price || product.basePrice || 0).toFixed(4)),
             finalPrice: parseFloat(finalUnitPrice.toFixed(4)),
             quantity: parseInt(String(quantity), 10) || 1,
-            image: (product.images && product.images[0]) || product.image || "/images/brand/logo-512.png",
+            image: (product.images && product.images[0]) || product.image || "/images/logo-512.png",
             // 🎁 [بطاقة هدية بمبلغ حر]: item_type = "gift-card" هو اللي بيخلي
             // create_order_with_items على السيرفر يعامل السطر ده كمبلغ حر
             // (يتحقق منه ضد الحد الأدنى/الأقصى) بدل ما يدور عليه في جدول
@@ -3394,7 +3394,7 @@
             const social = data.social || {};
             const seo = data.seo || {};
             const pageUrl = window.location.origin + window.location.pathname;
-            const logoUrl = store.logo || "/images/brand/logo-512.png";
+            const logoUrl = store.logo || "/images/logo-512.png";
             const storeName = store.name || "حلويات بوسي";
 
             const sameAs = [social.facebook, social.instagram, social.tiktok].filter(Boolean);
@@ -3780,7 +3780,7 @@
                             <i class="fa-solid fa-bars-staggered"></i>
                         </button>
                         <a href="/index.html" class="brand-logo-container">
-                            <img id="bose-store-logo" src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/brand/logo-512.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="brand-logo-img" width="80" height="80" />
+                            <img id="bose-store-logo" src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/logo-512.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="brand-logo-img" width="80" height="80" />
                             <span class="brand-name-display" title="${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                         </a>
                     </div>
@@ -3802,7 +3802,7 @@
                 <div id="bose-sidebar-drawer" class="bose-sidebar-drawer" aria-hidden="true">
                     <div class="sidebar-header">
                         <div class="sidebar-logo-container">
-                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/brand/logo-512.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}" class="sidebar-logo" width="80" height="80" />
+                            <img src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/logo-512.png', 150)}" alt="لوجو ${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}" class="sidebar-logo" width="80" height="80" />
                             <span class="sidebar-brand-name">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                         </div>
                         <button id="sidebar-close-btn" class="sidebar-close-btn" aria-label="إغلاق القائمة">
@@ -4104,7 +4104,7 @@
                     <div class="footer-grid-layout">
                         <div class="footer-column-block">
                             <div class="footer-brand-meta">
-                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/brand/logo-512.png', 150)}" alt="${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="footer-logo" width="80" height="80" />
+                                <img src="${window.optimizeBoseImageUrl(data.store?.logo || '/images/logo-512.png', 150)}" alt="${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')} الفاخرة" class="footer-logo" width="80" height="80" />
                                 <span class="footer-title">${window.escapeBoseHTML(data.store?.name || 'حلويات بوسي')}</span>
                             </div>
                             <p id="footer-about-text" class="footer-about-paragraph">${window.escapeBoseHTML(data.footer?.about || 'صنعناها بحب لتهديها لمن تحب')}</p>
@@ -4234,7 +4234,7 @@
                     filtered.forEach((/** @type {any} */ p) => {
                         let targetUrl = (p.id === 'toort-custom-master' || p.slug === 'toort-custom-master') ? 'cake-builder.html' : 
                                         ((p.id === 'flowers-master' || p.slug === 'flowers-master') ? 'flower-builder.html' : `product.html?slug=${encodeURIComponent(p.slug)}`);
-                        const safeImg = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/brand/logo-512.png', 120);
+                        const safeImg = window.optimizeBoseImageUrl((p.images && p.images.length > 0 && p.images[0]) ? p.images[0] : '/images/logo-512.png', 120);
                         const safeTitle = window.escapeBoseHTML(p.title);
                         const safeFlavor = window.escapeBoseHTML(p.flavorName || '');
                         html += `
@@ -4336,7 +4336,7 @@
                             <i class="fa-solid fa-bars-staggered"></i>
                         </button>
                         <a href="/index.html" class="brand-logo-container">
-                            <img src="/images/brand/logo-512.png" alt="لوجو حلويات بوسي" class="brand-logo-img" width="80" height="80" />
+                            <img src="/images/logo-512.png" alt="لوجو حلويات بوسي" class="brand-logo-img" width="80" height="80" />
                             <span class="brand-name-display">حلويات بوسي</span>
                         </a>
                     </div>

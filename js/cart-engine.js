@@ -371,7 +371,7 @@ function renderBoseCartPage(storeData) {
             cartCard.setAttribute("data-item-id", item.id);
             cartCard.setAttribute("data-index", index);
             
-            const safeCartImg = (window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(item.image, 240) : item.image) || '/images/brand/logo-512.png';
+            const safeCartImg = (window.optimizeBoseImageUrl ? window.optimizeBoseImageUrl(item.image, 240) : item.image) || '/images/logo-512.png';
             const safeTitle = esc(item.title || "");
             const safeFlavorName = esc(cleanFlavorName || "");
 
